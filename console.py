@@ -3,7 +3,8 @@
 """ 
     Module: console
 
-    This module contains the entry point of the command interpreter
+    This module contains the entry point of the command line interpreter interfce CLI
+    using HBNB class inherited from Cmd class in cmd module 
 """
 
 import cmd
@@ -28,6 +29,8 @@ class HBNBCommand(cmd.Cmd):
     def empty_line():
         """empty line shouldn’t execute anything"""
         pass
+
+
 
 
 if __name__ == '__main__':
