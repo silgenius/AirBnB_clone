@@ -41,28 +41,19 @@ class FileStorage:
         <obj class name>.id.
         """
         key = str(obj.__class__.__name__) + "." + str(obj.id)
-        self.__objects.update({key: obj.to_dict()})
+        self.__objects.update({key: obj})
 
     def save(self):
         """
         Serializes the __objects dictionary to the JSON file specified
         by __file_path.
         """
-        file_content = {}
-        try:
-            with open(type(self).__file_path, mode="r", encoding="utf-8") as f:
-                file_content = f.read()
-                if file_content:
-                    file_content = json.loads(file_content)
-        except FileNotFoundError:
-            pass
-
+        sterilized_file = {}
         with open(type(self).__file_path, mode="w", encoding="utf-8") as f:
             for key, value in self.__objects.items():
-                file_content.update({key: value})
-            if file_content:
-                file_content = json.dumps(file_content)
-                f.write(file_content)
+                sterilized_file[key] = value.to_dict()
+            sterilized_file = json.dumps(sterilized_file)
+            f.write(sterilized_file)
 
     def reload(self):
         """
@@ -72,7 +63,7 @@ class FileStorage:
         try:
             with open(type(self).__file_path, mode="r", encoding="utf-8") as f:
                 file_content = json.loads(f.read())
-                self.__object = {}
+                self.__objects = {}
                 for key, value in file_content.items():
                     cls_name, obj_id = key.split(".")
                     module = __import__("models.base_model", fromlist=[cls_name])
