@@ -30,6 +30,7 @@ class HBNBCommand(cmd.Cmd):
     - do_show(self, line)
     - do_destroy(self, line)
     - do_all(self, line)
+    - do_count(self, line)
 
     Puplic class attributes:
     - allcls
