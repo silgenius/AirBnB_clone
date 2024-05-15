@@ -57,8 +57,9 @@ class FileStorage:
 
     def reload(self):
         """
-        Deserializes the JSON file specified by __file_path into the __objects dictionary.
-        This operation only occurs if the JSON file exists; otherwise, it does nothing.
+        Deserializes the JSON file specified by __file_path
+        into the __objects dictionary. This operation only occurs if
+        the JSON file exists; otherwise, it does nothing.
         """
         try:
             with open(type(self).__file_path, mode="r", encoding="utf-8") as f:
@@ -67,7 +68,8 @@ class FileStorage:
                 module_name = {"BaseModel": "base_model", "User": "user"}
                 for key, value in file_content.items():
                     cls_name, obj_id = key.split(".")
-                    module = __import__("models." + module_name[cls_name], fromlist=[cls_name])
+                    module = __import__("models." + module_name[cls_name],
+                                        fromlist=[cls_name])
                     cls = getattr(module, cls_name)
                     self.__objects[key] = cls(**value)
         except FileNotFoundError:

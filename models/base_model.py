@@ -3,13 +3,15 @@
 """
     Module: BaseModel
 
-    This module contains the BaseModel class, which serves as a foundation for other classes
-    by defining common attributes and methods.
+    This module contains the BaseModel class, which serves as a
+    foundation for other classes by defining common attributes
+    and methods.
 """
 
 import uuid
 from datetime import datetime
 from . import storage
+
 
 class BaseModel:
     """
@@ -27,7 +29,7 @@ class BaseModel:
                 elif key == "updated_at" or key == "created_at":
                     setattr(self, key, datetime.fromisoformat(value))
                 else:
-                    setattr(self, key, value);
+                    setattr(self, key, value)
         else:
             self.id = str(uuid.uuid4())
             self.created_at = datetime.now()
