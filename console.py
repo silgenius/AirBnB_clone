@@ -18,7 +18,7 @@ from models.place import Place
 from models.review import Review
 
 
- HBNBCommand(cmd.Cmd):
+class HBNBCommand(cmd.Cmd):
     """this is the HBNB command interpreter."""
 
     """
@@ -46,6 +46,7 @@ from models.review import Review
         "Review": Review
 
     prompt = "(hbnb)"
+
 
 
 
