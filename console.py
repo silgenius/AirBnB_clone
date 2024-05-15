@@ -8,7 +8,7 @@
 """
 
 import cmd
-from models.engine import Storage
+from models import Storage
 
 
 class HBNBCommand(cmd.Cmd):
@@ -26,6 +26,14 @@ class HBNBCommand(cmd.Cmd):
     - __file_path: string
     - __objects: dictionary
     """
+    allcls = {
+        "BaseModel": BaseModel,
+        "User": User,
+        "State": State,
+        "City": City,
+        "Amenity": Amenity,
+        "Place": Place,
+        "Review": Review
 
     prompt = "(hbnb)"
 
@@ -78,7 +86,7 @@ class HBNBCommand(cmd.Cmd):
                 print(** instance id missing **)
             return None
         obj_key = "{}.{}".format(cls_name, id)
-        obj_all= models.Filestorage.all()
+        obj_all= models.storage.all()
         if obj_key not in obj_all:
             print("** no instance found **")
         else :
@@ -88,9 +96,44 @@ class HBNBCommand(cmd.Cmd):
     def do_destroy(self, line):
         """Deletes an instance based on the class name and id and saves the change
         expected syntax: delete <class name> <id>"""
-        
+            args = line.split()
+            cls_name = ags[0]
+            id =args[1]
+            if not cls_name:
+                print("** class name missing **")
+                return None
+            elif cls_name not in self.allcls:
+                print("** class doesn't exist **")
+                return None
+            elif len(args) < 2:
+                print("** instance id missing **")
+                return None 
+            obj_key = "{}.{}".format(cls_name, id)
+            obj_all = models.storage.all()
+                if obj_key not in obj_all:
+                    print("** no instance found **")
+                else:
+                    obj = obj_all[obj_key]
+                    del obj
+                models.storage.save()
+
+
     def do_all(self, line):
-        """ """
+        """Prints all string representation of all instances based or not on the class name
+        >The printed result must be a list of strings
+        expected syntax-1: all.
+        expected syntax-2: all <class name>"""
+            args = line.spilt()
+            cls_name = arg[0]
+            if cls_name not in self.allcls:
+                print("** class doesn't exist **")
+                return None
+            else:
+
+
+
+
+
     def do_update(self, line):
         """ """
 
