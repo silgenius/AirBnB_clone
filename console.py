@@ -207,7 +207,6 @@ class HBNBCommand(cmd.Cmd):
             obj = obj_all[obj_key]
             attr_value = attr_value.strip('"')
             setattr(obj, attr, attr_value)
-            print(lists)
             obj.save()
 
 
