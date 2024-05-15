@@ -9,9 +9,16 @@
 
 import cmd
 from models import Storage
+from models.base_model import BaseModel
+from models.user import User
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.place import Place
+from models.review import Review
 
 
-class HBNBCommand(cmd.Cmd):
+ HBNBCommand(cmd.Cmd):
     """this is the HBNB command interpreter."""
 
     """
@@ -133,9 +140,44 @@ class HBNBCommand(cmd.Cmd):
 
 
 
+   def do_update(self, line):
+        """ Updates one instance at a call based on the class name and id by adding or updating attribute,
+        and saves the change
+        expected syntax: update <class name> <id> <attribute name> "<attribute value>" """
+        args = line.split()
+        cls_name = args[0]
+        use_id = args[1]
+        attr = args[2]
+        attr_value = args[3]
+        if not cls_name:
+                print("** class name missing **")
+                return None
+        elif cls_name not in self.allcls:
+                print("** class doesn't exist **")
+                return None
+        elif len(args) < 2:
+                print("** instance id missing **")
+                return None
+        elif len(args) < 3:
+                print("** attribute name missing **")
+                return None
+         elif len(args) < 4:
+                print("** value missing **")
+                return None
+        else:
+             obj_key = "{}.{}".format(cls_name, user_id)
+            obj_all = models.storage.all()
+                if obj_key not in obj_all:
+                    print("** no instance found **")
+                else :
+                    obj = obj_all[obj_key]
+                    setattr(obj, attr, attr_value)
+                    obj[key].save()
 
-    def do_update(self, line):
-        """ """
+
+
+        
+
 
 
 
