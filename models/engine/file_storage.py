@@ -65,7 +65,9 @@ class FileStorage:
             with open(type(self).__file_path, mode="r", encoding="utf-8") as f:
                 file_content = json.loads(f.read())
                 self.__objects = {}
-                module_name = {"BaseModel": "base_model", "User": "user"}
+                module_name = {"BaseModel": "base_model", "User": "user", "Place": "place"
+                            "State": "state", "City": "city", "Amenity": "amenity",
+                            "Review": "review"}
                 for key, value in file_content.items():
                     cls_name, obj_id = key.split(".")
                     module = __import__("models." + module_name[cls_name],
