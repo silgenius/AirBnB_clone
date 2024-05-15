@@ -18,6 +18,7 @@ from models.place import Place
 from models.review import Review
 from get_class import get_class
 
+
 class HBNBCommand(cmd.Cmd):
     """this is the HBNB command interpreter."""
 
@@ -210,6 +211,19 @@ class HBNBCommand(cmd.Cmd):
             print(lists)
             obj.save()
 
+    def default(self, line):
+        commands = {"destroy": self.do_destroy}
+        if "." in line:
+            cls_name, content = line.split(".")
+            command, args = content.split("(")
+            args = args[1:-2]
+            print(args)
+            if command in commands:
+                string = cls_name + " " + args
+                command = commands[command]
+                command(string)
+        else:
+            print("*** Unknown syntax: {}".format(line))
 
 
 if __name__ == '__main__':
