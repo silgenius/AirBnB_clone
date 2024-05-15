@@ -8,7 +8,7 @@
 """
 
 import cmd
-from models import Storage
+from models import storage
 from models.base_model import BaseModel
 from models.user import User
 from models.state import State
@@ -16,7 +16,7 @@ from models.city import City
 from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
-
+from get_class import get_class
 
 class HBNBCommand(cmd.Cmd):
     """this is the HBNB command interpreter."""
@@ -46,15 +46,13 @@ class HBNBCommand(cmd.Cmd):
         "Review": Review
         }
 
-    prompt = "(hbnb)"
-
-
+    prompt = "(hbnb) "
 
 
     def do_quit(self, line):
-        """Quit command to exit the program"""
+        """Quit command to exit the program
+        """
         return True
-
 
 
     def do_EOF(self, line):
@@ -63,11 +61,9 @@ class HBNBCommand(cmd.Cmd):
         return True
 
 
-
-    def empty_line():
+    def emptyline(self):
         """ This line doesn’t execute anything"""
         pass
-
 
 
     def do_create(self, line):
@@ -85,7 +81,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
 
         else:
-            obj.new = self.allcls[cls_name]()
+            obj_new = self.allcls[cls_name]()
             obj_new.save()
             print(obj_new.id)
 
@@ -96,63 +92,58 @@ class HBNBCommand(cmd.Cmd):
         expected syntax: show <class name> <id>"""
         if line:
             args = line.split()
+            if len(args) < 2:
+                print("** instance id missing **")
+                return
+
             cls_name = args[0]
             user_id = args[1]
-
-        if not cls_name:
+        else:
             print("** class name missing **")
-            return None
+            return
 
-        elif cls_name not in self.allcls:
+        if cls_name not in self.allcls:
             print("** class doesn't exist **")
-            return None
-
-        elif len(args) < 2:
-            print("** instance id missing **")
-            return None
+            return
 
         obj_key = "{}.{}".format(cls_name, user_id)
-        obj_all= models.storage.all()
+        obj_all= storage.all()
         if obj_key not in obj_all:
             print("** no instance found **")
+            return
 
-        else :
-            obj = obj_all[obj_key]
-            print(obj)
-
-
+        obj = obj_all[obj_key]
+        print(obj)
 
 
     def do_destroy(self, line):
         """Deletes an instance based on the class name and id and saves the change
         expected syntax: delete <class name> <id>"""
-            if line:
-                args = line.split()
-                cls_name = ags[0]
-                user_id =args[1]
-
-            if not cls_name:
-                print("** class name missing **")
-                return None
-
-            elif cls_name not in self.allcls:
-                print("** class doesn't exist **")
-                return None
-
-            elif len(args) < 2:
+        if line:
+            args = line.split()
+            if len(args) < 2:
                 print("** instance id missing **")
-                return None
+                return
 
-            obj_key = "{}.{}".format(cls_name, user_id)
-            obj_all = models.storage.all()
-                if obj_key not in obj_all:
-                    print("** no instance found **")
+            cls_name = args[0]
+            user_id =args[1]
+        else:
+            print("** class name missing **")
+            return
 
-                else:
-                    obj = obj_all[obj_key]
-                    del obj
-                models.storage.save()
+        if cls_name not in self.allcls:
+            print("** class doesn't exist **")
+            return
 
+        obj_key = "{}.{}".format(cls_name, user_id)
+        obj_all = storage.all()
+        if obj_key not in obj_all:
+            print("** no instance found **")
+            return
+
+        obj = obj_all[obj_key]
+        del obj
+        storage.save()
 
 
     def do_all(self, line):
@@ -160,68 +151,64 @@ class HBNBCommand(cmd.Cmd):
         >The printed result must be a list of strings
         expected syntax-1: all.
         expected syntax-2: all <class name>"""
-        obj_all = models.storage.all()
+        obj_all = storage.all()
         obj_list = []
         if line:
             args = line.split()
             cls_name = args[0]
-        if cls_name not in self.allcls:
-            print("** class doesn't exist **")
-            return None
-
-        for obj in obj_all.values():
-            if obj.__class__.__name__ == cls_name:
-                obj_list.append(str(obj))
-        else:
+            if cls_name not in self.allcls:
+                print("** class doesn't exist **")
+                return
+            else:
+                for obj in obj_all.values():
+                    if obj.__class__.__name__ == cls_name:
+                        obj_list.append(str(obj))
+        if not line:
             for obj in obj_all.values():
-            obj_list.append(str(obj))
+                obj_list.append(str(obj))
 
-    print(obj_list)
-
+        print(obj_list)
 
 
     def do_update(self, line):
         """ Updates one instance at a call based on the class name and id by adding or updating attribute,
         and saves the change
         expected syntax: update <class name> <id> <attribute name> "<attribute value>" """
-        if line :
+        if line:
             args = line.split()
             cls_name = args[0]
-            use_id = args[1]
-            attr = args[2]
-            attr_value = args[3]
-
-        if not cls_name:
-                print("** class name missing **")
-                return None
-
-        elif cls_name not in self.allcls:
-                print("** class doesn't exist **")
-                return None
-
-        elif len(args) < 2:
+            if len(args) < 2:
                 print("** instance id missing **")
-                return None
+                return
+            user_id = args[1]
 
-        elif len(args) < 3:
+            if len(args) < 3:
                 print("** attribute name missing **")
-                return None
+                return
+            attr = args[2]
 
-         elif len(args) < 4:
+            if len(args) < 4:
                 print("** value missing **")
-                return None
-
+                return
+            attr_value = args[3]
         else:
-             obj_key = "{}.{}".format(cls_name, user_id)
-            obj_all = models.storage.all()
-                if obj_key not in obj_all:
-                    print("** no instance found **")
-                else :
-                    obj = obj_all[obj_key]
-                    setattr(obj, attr, attr_value)
-                    obj[key].save()
+            print("** class name missing **")
+            return
+
+        if cls_name not in self.allcls:
+            print("** class doesn't exist **")
+            return
+
+        obj_key = "{}.{}".format(cls_name, user_id)
+        obj_all = storage.all()
+        if obj_key not in obj_all:
+            print("** no instance found **")
+        else:
+            obj = obj_all[obj_key]
+            setattr(obj, attr, attr_value)
+            obj.save()
 
 
 
-    if __name__ == '__main__':
+if __name__ == '__main__':
     HBNBCommand().cmdloop()

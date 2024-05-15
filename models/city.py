@@ -9,7 +9,7 @@
 from models.base_model import BaseModel
 
 
-class State(BaseModel):
+class City(BaseModel):
     """
     Represents a city within a state.
     """
