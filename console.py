@@ -141,8 +141,7 @@ class HBNBCommand(cmd.Cmd):
             print("** no instance found **")
             return
 
-        obj = obj_all[obj_key]
-        del obj
+        obj_all.pop(obj_key)
         storage.save()
 
 
@@ -205,7 +204,9 @@ class HBNBCommand(cmd.Cmd):
             print("** no instance found **")
         else:
             obj = obj_all[obj_key]
+            attr_value = attr_value.strip('"')
             setattr(obj, attr, attr_value)
+            print(lists)
             obj.save()
 
 
