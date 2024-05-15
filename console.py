@@ -44,6 +44,7 @@ class HBNBCommand(cmd.Cmd):
         "Amenity": Amenity,
         "Place": Place,
         "Review": Review
+        }
 
     prompt = "(hbnb)"
 
