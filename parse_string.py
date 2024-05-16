@@ -1,5 +1,19 @@
 #!/usr/bin/python3
 
+"""
+    Parses a string containing a command in the format
+    'class_name.method(args)'.
+
+    Parameters:
+        line (str): The string to parse.
+
+    Returns:
+        list or ValueError: A list containing the parsed components
+        [command, class_name, *args], or a ValueError if the input
+        string does not match the expected format.
+"""
+
+
 def parse_string(line):
     my_list = []
     try:

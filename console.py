@@ -1,10 +1,11 @@
 #!/usr/bin/python3
 
-""" 
+"""
     Module: console
 
-    This module contains the entry point of the command line interpreter interfce CLI
-    using HBNB class inherited from Cmd class in cmd module 
+    This module contains the entry point of the command line
+    interpreter interfce CLI
+    using HBNB class inherited from Cmd class in cmd module
 """
 
 import cmd
@@ -16,8 +17,8 @@ from models.city import City
 from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
-from get_class import get_class
 from parse_string import parse_string
+
 
 class HBNBCommand(cmd.Cmd):
     """this is the HBNB command interpreter."""
@@ -36,8 +37,8 @@ class HBNBCommand(cmd.Cmd):
     Puplic class attributes:
     - allcls
     - prompt
-    
     """
+
     allcls = {
         "BaseModel": BaseModel,
         "User": User,
@@ -50,27 +51,23 @@ class HBNBCommand(cmd.Cmd):
 
     prompt = "(hbnb) "
 
-
     def do_quit(self, line):
         """Quit command to exit the program
         """
         return True
-
 
     def do_EOF(self, line):
         """EOF command to exit the program"""
         print()
         return True
 
-
     def emptyline(self):
         """ This line doesn’t execute anything"""
         pass
 
-
     def do_create(self, line):
-        """Creates a new instance, saves it (to the JSON file) and prints the id 
-        expected syntax:  create <class name>
+        """Creates a new instance, saves it (to the JSON file)
+        and prints the id expected syntax:  create <class name>
         """
         if line:
             args = line.split()
@@ -87,11 +84,9 @@ class HBNBCommand(cmd.Cmd):
             obj_new.save()
             print(obj_new.id)
 
-
-
     def do_show(self, line):
-        """Prints the string representation of an instance based on the class name and id
-        expected syntax: show <class name> <id>"""
+        """Prints the string representation of an instance based on
+        the class name and id expected syntax: show <class name> <id>"""
         if line:
             args = line.split()
             if len(args) < 2:
@@ -109,7 +104,7 @@ class HBNBCommand(cmd.Cmd):
             return
 
         obj_key = "{}.{}".format(cls_name, user_id)
-        obj_all= storage.all()
+        obj_all = storage.all()
         if obj_key not in obj_all:
             print("** no instance found **")
             return
@@ -117,10 +112,9 @@ class HBNBCommand(cmd.Cmd):
         obj = obj_all[obj_key]
         print(obj)
 
-
     def do_destroy(self, line):
-        """Deletes an instance based on the class name and id and saves the change
-        expected syntax: delete <class name> <id>"""
+        """Deletes an instance based on the class name and id and saves the
+        change expected syntax: delete <class name> <id>"""
         if line:
             args = line.split()
             if len(args) < 2:
@@ -128,7 +122,7 @@ class HBNBCommand(cmd.Cmd):
                 return
 
             cls_name = args[0]
-            user_id =args[1]
+            user_id = args[1]
         else:
             print("** class name missing **")
             return
@@ -146,10 +140,10 @@ class HBNBCommand(cmd.Cmd):
         obj_all.pop(obj_key)
         storage.save()
 
-
     def do_all(self, line):
-        """Prints all string representation of all instances based or not on the class name
-        >The printed result must be a list of strings
+        """Prints all string representation of all instances based or
+        not on the class name
+        > The printed result must be a list of strings
         expected syntax-1: all.
         expected syntax-2: all <class name>"""
         obj_all = storage.all()
@@ -170,11 +164,11 @@ class HBNBCommand(cmd.Cmd):
 
         print(obj_list)
 
-
     def do_update(self, line):
-        """ Updates one instance at a call based on the class name and id by adding or updating attribute,
-        and saves the change
-        expected syntax: update <class name> <id> <attribute name> "<attribute value>" """
+        """ Updates one instance at a call based on the class name and
+        id by adding or updating attribute, and saves the change
+        expected syntax:
+            update <class name> <id> <attribute name> "<attribute value>" """
         if line:
             args = line.split()
             cls_name = args[0]
@@ -232,13 +226,13 @@ class HBNBCommand(cmd.Cmd):
                 count += 1
         print(count)
 
-
     def default(self, line):
         commands = {"destroy": self.do_destroy, "show": self.do_show,
                     "all": self.do_all, "count": self.count,
                     "update": self.do_update}
 
         command_list = parse_string(line)
+        # check if command is in list of special commands
         if command_list == ValueError or command_list[0] not in commands:
             print("*** Unknown syntax: {}".format(line))
             return
@@ -249,7 +243,9 @@ class HBNBCommand(cmd.Cmd):
             if isinstance(command_list[i], str):
                 args += command_list[i] + " "
             i += 1
+        # Remove extra white space at the end of args
         args = args[:-1]
+        # Do these if args is to update an instance from a dictionary
         if len(command_list) == 4 and isinstance(command_list[3], dict):
             for key, value in command_list[3].items():
                 string = args[:]
