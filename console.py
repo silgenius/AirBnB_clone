@@ -240,8 +240,6 @@ class HBNBCommand(cmd.Cmd):
             except ValueError:
                 print("*** Unknown syntax: {}".format(line))
                 return
-            if len(args) == 1:
-                args = ""
             args = args[1:-2]
             print(cls_name)
             if command in commands:
