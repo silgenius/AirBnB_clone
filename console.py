@@ -17,7 +17,7 @@ from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
 from get_class import get_class
-
+from parse_string import parse_string
 
 class HBNBCommand(cmd.Cmd):
     """this is the HBNB command interpreter."""
@@ -207,11 +207,12 @@ class HBNBCommand(cmd.Cmd):
         else:
             obj = obj_all[obj_key]
             attr_value = attr_value.strip('"')
+            if attr_value.isdigit():
+                attr_value = int(attr_value)
             setattr(obj, attr, attr_value)
-            print(lists)
             obj.save()
 
-    def do_count(self, line):
+    def count(self, line):
         """"Retrieves the number of instances of a class
         expected syntax: <class name>.count()"""
         if line:
@@ -231,27 +232,32 @@ class HBNBCommand(cmd.Cmd):
                 count += 1
         print(count)
 
+
     def default(self, line):
         commands = {"destroy": self.do_destroy, "show": self.do_show,
-                    "all": self.do_all, "count": self.do_count}
-        if "." in line:
-            try:
-                cls_name, content = line.split(".")
-                command, args = content.split("(")
-            except ValueError:
-                print("*** Unknown syntax: {}".format(line))
-                return
-            if len(args) == 1:
-                args = ""
-            args = args[1:-2]
-            print(cls_name)
-            if command in commands:
-                string = cls_name + " " + args
-                string = string.strip()
-                command = commands[command]
-                command(string)
-        else:
+                    "all": self.do_all, "count": self.count,
+                    "update": self.do_update}
+
+        command_list = parse_string(line)
+        if command_list == ValueError or command_list[0] not in commands:
             print("*** Unknown syntax: {}".format(line))
+            return
+
+        args = ""
+        i = 1
+        while i < len(command_list):
+            if isinstance(command_list[i], str):
+                args += command_list[i] + " "
+            i += 1
+        args = args[:-1]
+        if len(command_list) == 4 and isinstance(command_list[3], dict):
+            for key, value in command_list[3].items():
+                string = args[:]
+                string += " " + str(key) + " " + str(value)
+                self.do_update(string)
+            return
+        command = commands[command_list[0]]
+        command(args)
 
 
 if __name__ == '__main__':
