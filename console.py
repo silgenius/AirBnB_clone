@@ -211,15 +211,43 @@ class HBNBCommand(cmd.Cmd):
             print(lists)
             obj.save()
 
+    def do_count(self, line):
+        """"Retrieves the number of instances of a class
+        expected syntax: <class name>.count()"""
+        if line:
+            cls_name = line
+        if not cls_name:
+            print("** class name missing **")
+            return
+
+        elif cls_name not in self.allcls:
+            print("** class doesn't exist **")
+            return
+
+        obj_all = storage.all()
+        count = 0
+        for obj in obj_all.values():
+            if obj.__class__.__name__ == cls_name:
+                count += 1
+        print(count)
+
     def default(self, line):
-        commands = {"destroy": self.do_destroy}
+        commands = {"destroy": self.do_destroy, "show": self.do_show,
+                    "all": self.do_all, "count": self.do_count}
         if "." in line:
-            cls_name, content = line.split(".")
-            command, args = content.split("(")
+            try:
+                cls_name, content = line.split(".")
+                command, args = content.split("(")
+            except ValueError:
+                print("*** Unknown syntax: {}".format(line))
+                return
+            if len(args) == 1:
+                args = ""
             args = args[1:-2]
-            print(args)
+            print(cls_name)
             if command in commands:
                 string = cls_name + " " + args
+                string = string.strip()
                 command = commands[command]
                 command(string)
         else:
