@@ -241,12 +241,13 @@ class HBNBCommand(cmd.Cmd):
                 print("*** Unknown syntax: {}".format(line))
                 return
             args = args[1:-2]
-            print(cls_name)
             if command in commands:
                 string = cls_name + " " + args
                 string = string.strip()
                 command = commands[command]
                 command(string)
+            else:
+                print("*** Unknown syntax: {}".format(line))
         else:
             print("*** Unknown syntax: {}".format(line))
 
