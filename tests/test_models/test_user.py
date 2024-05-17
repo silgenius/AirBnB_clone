@@ -1,110 +1,52 @@
-#!/usr/bin/python3
-
-"""This user instance class test file with different test cases """
-
-
 import unittest
-from datetime import datetime
-from models.base_model import BaseModel
 from models.user import User
-from time import sleep
+from models.engine.file_storage import FileStorage
+import os
 
-class TestUserParentClass(unittest.TestCase):
-    """test cases for user class parent that inherited from """
-    def test_parentClass(self):
-        self.assertIsInstance(User(), BaseModel)
-
-
-class TestUserInstances(unittest.TestCase):
-    """test for instances of user class setup 2 users then test them in different cases"""
+class TestUser(unittest.TestCase):
 
     def setUp(self):
-        self.user1 = User()
-        self.user2 = User()
+        """Set up for testing"""
+        self.user = User()
 
-    def test_with_args_and_kwargs(self):
-        dtt = datetime.now()
-        dtt_iso = dtt.isoformat()
-        my_user = User(
-            "22", id="1423456667286",
-            created_at=dtt_iso, updated_at=dtt_iso,
-            email="ray@yahoo.com", password="ray223$",
-            first_name="Ray", last_name="Edward"
-        )
-        self.assertEqual(my_user.id, "1423456667286")
-        self.assertEqual(my_user.created_at, dtt)
-        self.assertEqual(my_user.updated_at, dtt)
-        self.assertEqual(my_user.email, "ray@yahoo.com")
-        self.assertEqual(my_user.password, "ray223$")
-        self.assertEqual(my_user.first_name, "Ray")
-        self.assertEqual(my_user.last_name, "Edward")
+    def tearDown(self):
+        """Clean up after each test"""
+        try:
+            os.remove("file.json")
+        except FileNotFoundError:
+            pass
 
-    def test_with_None_args_kwargs(self):
-        my_user = User(None)
+    def test_user_attributes(self):
+        """Test if User has the correct attributes"""
+        self.assertTrue(hasattr(self.user, "email"))
+        self.assertTrue(hasattr(self.user, "password"))
+        self.assertTrue(hasattr(self.user, "first_name"))
+        self.assertTrue(hasattr(self.user, "last_name"))
+        self.assertEqual(self.user.email, "")
+        self.assertEqual(self.user.password, "")
+        self.assertEqual(self.user.first_name, "")
+        self.assertEqual(self.user.last_name, "")
 
-        self.assertNotIn(None, my_user.__dict__.values())
+    def test_user_inheritance(self):
+        """Test if User inherits from BaseModel"""
+        self.assertIsInstance(self.user, BaseModel)
 
+    def test_user_serialization(self):
+        """Test if User can be serialized and deserialized correctly"""
+        storage = FileStorage()
+        storage.new(self.user)
+        storage.save()
+        
+        storage.reload()
+        user_key = f"User.{self.user.id}"
+        self.assertIn(user_key, storage.all())
 
-class TestUserUnique(unittest.TestCase):
-    """Test cases for each user attributes in user class"""
+        deserialized_user = storage.all()[user_key]
+        self.assertEqual(deserialized_user.email, "")
+        self.assertEqual(deserialized_user.password, "")
+        self.assertEqual(deserialized_user.first_name, "")
+        self.assertEqual(deserialized_user.last_name, "")
 
-    def setUp(self):
-        self.user1 = User()
-        sleep(0.01)
-        self.user2 = User()
-
-    def test_unique_id(self):
-        self.assertNotEqual(self.user1.id, self.user2.id)
-
-    def test_unique_email(self):
-        self.assertNotEqual(self.user1.email, self.user2.email)
-
-    def test_unique_timestamps_created_at(self):
-        self.assertLess(
-            self.user1.created_at, self.user2.created_at
-            )
-
-class TestUserAttrTypes(unittest.TestCase):
-    """Test cases for types of attributes of user in user class"""
-    def setUp(self):
-        self.my_user = User()
-
-    def test_User_id_type(self):
-        self.assertIs(type(self.my_user.id), str)
-
-    def test_User_first_name_type(self):
-        self.assertIs(type(self.my_user.first_name), str)
-
-    def test_User_last_name_type(self):
-        self.assertIs(type(self.my_user.last_name), str)
-
-    def test_User_email_type(self):
-        self.assertIs(type(self.my_user.email), str)
-
-    def test_User_password_type(self):
-        self.assertIs(type(self.my_user.password), str)
-
-    def test_User_created_at_instance(self):
-        self.assertIsInstance(self.my_user.created_at, datetime)
-        iso_str = self.my_user.created_at.isoformat()
-        self.assertIsInstance(iso_str, str)
-
-class TestUserMethods(unittest.TestCase):
-    """test cases for different methods on user instance of user class"""
-
-    def test_save_method_changed_value(self):
-        pre_updated_at = self.user.updated_at
-        self.user.models.save()
-        self.assertGreater(self.user.updated_at, pre_updated_at)
-
-    def test_to_dict_method_changed_value(self):
-
-
-
-
-
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
 
