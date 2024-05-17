@@ -205,7 +205,9 @@ class HBNBCommand(cmd.Cmd):
             # if it couldn't, leave it as string
             try:
                 attr_value = eval(attr_value)
-            except NameError:
+            # SyntaxError when value is not alphanumeric
+            # (in password case), Leave as string
+            except (NameError, SyntaxError):
                 pass
             setattr(obj, attr, attr_value)
             obj.save()
