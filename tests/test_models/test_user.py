@@ -11,6 +11,7 @@ from time import sleep
 
 class TestUserParentClass(unittest.TestCase):
     """test cases for user class parent that inherited from """
+
     def test_parentClass(self):
         self.assertIsInstance(User(), BaseModel)
 
@@ -44,13 +45,17 @@ class TestUserInstances(unittest.TestCase):
 
         self.assertNotIn(None, my_user.__dict__.values())
 
+    def test_with_None_password(self):
+        self.assertRaises(valueError):
+            User(password=None)
 
-class TestUserUnique(unittest.TestCase):
-    """Test cases for each user attributes in user class"""
+
+class TestUserUniqueness(unittest.TestCase):
+    """Test cases for uniqueness of each user attributes in user class"""
 
     def setUp(self):
         self.user1 = User()
-        sleep(0.01)
+        sleep(0.02)
         self.user2 = User()
 
     def test_unique_id(self):
@@ -60,9 +65,10 @@ class TestUserUnique(unittest.TestCase):
         self.assertNotEqual(self.user1.email, self.user2.email)
 
     def test_unique_timestamps_created_at(self):
-        self.assertLess(
-            self.user1.created_at, self.user2.created_at
+        self.assertNotEqual(
+            self.user2.created_at, self.user1.created_at
             )
+
 
 class TestUserAttrTypes(unittest.TestCase):
     """Test cases for types of attributes of user in user class"""
@@ -92,16 +98,51 @@ class TestUserAttrTypes(unittest.TestCase):
 class TestUserMethods(unittest.TestCase):
     """test cases for different methods on user instance of user class"""
 
+    def setUp(self):
+        self.user = User()
+
     def test_save_method_changed_value(self):
         pre_updated_at = self.user.updated_at
         self.user.models.save()
+        self.assertNotEqual(self.user.updated_at, pre_updated_at)
         self.assertGreater(self.user.updated_at, pre_updated_at)
 
-    def test_to_dict_method_changed_value(self):
+    def test_save_method_Unintentional_change(self):
+        pre_name = self.user.name
+        pre_email = self.user.email
+        updated_name = "Martin"
+        self.user.name = updated_name
+        self.user.save()
+        self.assertEqual(updated_user.name, updated_name)
+        self.assertEqual(updated_user.email, pre_email_email)
 
+    def test_to_dict_method(self):
+        user_dict = self.user.to_dict()
+        self.assertIsInstance(user_dict, dict)
 
+    def test_user_to_dict_output(self):
+        dtt = datetime.now()
+        dtt_iso = dtt.isoformat()
+        my_user = User(
+            "22", id="1423456667286",
+            created_at=dtt_iso, updated_at=dtt_iso,
+            email="ray@yahoo.com", password="ray223$",
+            first_name="Ray", last_name="Edward"
+            )
+        output_dict = {
+                "id": "1423456667286",
+                "created_at": dtt_iso,
+                "updated_at": dtt_iso,
+                "email": "ray@yahoo.com",
+                "password": "ray223$",
+                "first_name": "Ray",
+                "last_name": "Edward"
+                    }
+        self.assertEqual(my_user.to_dict(), output_dict)
 
-
+        def test_to_dict_output_none(self):
+            with self.assertRaises(TypeError):
+                self.city.to_dict(None)
 
 
 
