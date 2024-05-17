@@ -25,7 +25,7 @@ def parse_string(line):
         return ValueError
     my_list.append(command)
     my_list.append(cls_name)
-    if args[-1] == ")":
+    if args and args[-1] == ")":
         args = args[:-1]
     else:
         return ValueError
