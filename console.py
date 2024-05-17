@@ -201,8 +201,12 @@ class HBNBCommand(cmd.Cmd):
         else:
             obj = obj_all[obj_key]
             attr_value = attr_value.strip('"')
-            if attr_value.isdigit():
-                attr_value = int(attr_value)
+            # Try to convert attr_value to it respective object,
+            # if it couldn't, leave it as string
+            try:
+                attr_value = eval(attr_value)
+            except NameError:
+                pass
             setattr(obj, attr, attr_value)
             obj.save()
 
@@ -240,11 +244,11 @@ class HBNBCommand(cmd.Cmd):
         args = ""
         i = 1
         while i < len(command_list):
-            if isinstance(command_list[i], str):
-                args += command_list[i] + " "
+            if not isinstance(command_list[i], dict):
+                args += str(command_list[i]) + " "
             i += 1
         # Remove extra white space at the end of args
-        args = args[:-1]
+        args = args.strip()
         # Do these if args is to update an instance from a dictionary
         if len(command_list) == 4 and isinstance(command_list[3], dict):
             for key, value in command_list[3].items():

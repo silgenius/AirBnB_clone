@@ -3,3 +3,5 @@ test_save_reload_base_model.py
 file.json
 test_save_reload_user.py
 test_user_instance.py
+test_parse_string.py
+test_parse.py
