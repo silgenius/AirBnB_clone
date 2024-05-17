@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-"""This user instance class test file """
+"""This user instance class test file with different test cases """
 
 
 import unittest
@@ -31,7 +31,6 @@ class TestUserInstances(unittest.TestCase):
             email="ray@yahoo.com", password="ray223$",
             first_name="Ray", last_name="Edward"
         )
-
         self.assertEqual(my_user.id, "1423456667286")
         self.assertEqual(my_user.created_at, dtt)
         self.assertEqual(my_user.updated_at, dtt)
@@ -40,13 +39,8 @@ class TestUserInstances(unittest.TestCase):
         self.assertEqual(my_user.first_name, "Ray")
         self.assertEqual(my_user.last_name, "Edward")
 
-    def test_with_None_args(self):
-        my_user = User(
-            "22", id=None,
-            created_at=None, updated_at=None,
-            email=None, password=None,
-            first_name=None, last_name=None
-            )
+    def test_with_None_args_kwargs(self):
+        my_user = User(None)
 
         self.assertNotIn(None, my_user.__dict__.values())
 
@@ -62,14 +56,13 @@ class TestUserUnique(unittest.TestCase):
         def test_unique_id(self):
             self.assertNotEqual(self.user1.id, self.user2.id)
 
-        def test_unique_id(self):
+        def test_unique_email(self):
             self.assertNotEqual(self.user1.email, self.user2.email)
 
-        def test_unique_created_at(self):
+        def test_unique_timestamps_created_at(self):
             self.assertLess(
                 self.user1.created_at, self.user2.created_at
-                )
-
+            )
 
 class TestUserAttrTypes(unittest.TestCase):
     """Test cases for types of attributes of user in user class"""
@@ -77,34 +70,36 @@ class TestUserAttrTypes(unittest.TestCase):
             self.my_user = User()
 
     def test_User_id_type(self):
-        self.assertIs(type(my_user.id), str)
+        self.assertIs(type(self.my_user.id), str)
 
     def test_User_first_name_type(self):
-        self.assertIs(type(my_user.first_name), str)
+        self.assertIs(type(self.my_user.first_name), str)
 
     def test_User_last_name_type(self):
-        self.assertIs(type(my_user.last_name), str)
+        self.assertIs(type(self.my_user.last_name), str)
 
     def test_User_email_type(self):
-        self.assertIs(type(my_user.email), str)
+        self.assertIs(type(self.my_user.email), str)
 
     def test_User_password_type(self):
-        self.assertIs(type(my_user.password), str)
+        self.assertIs(type(self.my_user.password), str)
 
     def test_User_created_at_instance(self):
-        self.assertIsInstance(my_user.created_at, datetime)
-        iso_str = my_user.created_at.isoformat()
+        self.assertIsInstance(self.my_user.created_at, datetime)
+        iso_str = self.my_user.created_at.isoformat()
         self.assertIsInstance(iso_str, str)
-
-
 
 class TestUserMethods(unittest.TestCase):
     """test cases for different methods on user instance of user class"""
 
-    def test_save_method_changed_vlaue(self):
-    pre_updated_at = self.user.updated_at
-    self.user.models.save()
-    self.assertNotEqual(pre_updated_at, self.user.updated_at)
+    def test_save_method_changed_value(self):
+        pre_updated_at = self.user.updated_at
+        self.user.models.save()
+        self.assertGreater(self.user.updated_at, pre_updated_at)
+
+    def test_to_dict_method_changed_value(self):
+
+
 
 
 
@@ -112,6 +107,4 @@ class TestUserMethods(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
-
 
