@@ -20,13 +20,15 @@ def parse_string(line):
     my_list = []
     try:
         cls_name, content = line.split(".", 1)
-        command, args = content.split("(")
+        command, args = content.split("(", 1)
     except ValueError:
         return ValueError
     my_list.append(command)
     my_list.append(cls_name)
-    if args[-1] == ")":
+    if args and args[-1] == ")":
         args = args[:-1]
+    else:
+        return ValueError
 
     if "," in args:
         # Re-format args
