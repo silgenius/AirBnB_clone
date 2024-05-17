@@ -46,28 +46,28 @@ class TestUserInstances(unittest.TestCase):
 
 
 class TestUserUnique(unittest.TestCase):
-        """Test cases for each user attributes in user class"""
+    """Test cases for each user attributes in user class"""
 
-        def setUp(self):
-            self.user1 = User()
-            sleep(0.01)
-            self.user2 = User()
+    def setUp(self):
+        self.user1 = User()
+        sleep(0.01)
+        self.user2 = User()
 
-        def test_unique_id(self):
-            self.assertNotEqual(self.user1.id, self.user2.id)
+    def test_unique_id(self):
+        self.assertNotEqual(self.user1.id, self.user2.id)
 
-        def test_unique_email(self):
-            self.assertNotEqual(self.user1.email, self.user2.email)
+    def test_unique_email(self):
+        self.assertNotEqual(self.user1.email, self.user2.email)
 
-        def test_unique_timestamps_created_at(self):
-            self.assertLess(
-                self.user1.created_at, self.user2.created_at
+    def test_unique_timestamps_created_at(self):
+        self.assertLess(
+            self.user1.created_at, self.user2.created_at
             )
 
 class TestUserAttrTypes(unittest.TestCase):
     """Test cases for types of attributes of user in user class"""
     def setUp(self):
-            self.my_user = User()
+        self.my_user = User()
 
     def test_User_id_type(self):
         self.assertIs(type(self.my_user.id), str)
