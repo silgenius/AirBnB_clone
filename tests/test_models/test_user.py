@@ -7,7 +7,7 @@ from time import sleep
 import os
 
 class TestStateParentClass(unittest.TestCase):
-    """Test cases for State class parent that it inherited from BaseModel"""
+    """Test cases for State class parent that inherited from BaseModel"""
     
     def test_StateParentClass(self):
         self.assertIsInstance(State(), BaseModel)
