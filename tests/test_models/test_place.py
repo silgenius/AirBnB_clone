@@ -147,7 +147,7 @@ class TestPlaceSerialization(unittest.TestCase):
         storage.save()
         
         storage.reload()
-        amenity_key = f"Place.{self.place.id}"
+        place_key = f"Place.{self.place.id}"
         self.assertIn(place_key, storage.all())
 
         deserialized_place = storage.all()[place_key]
