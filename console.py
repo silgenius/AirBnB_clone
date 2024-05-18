@@ -52,8 +52,7 @@ class HBNBCommand(cmd.Cmd):
     prompt = "(hbnb) "
 
     def do_quit(self, line):
-        """Quit command to exit the program
-        """
+        """Quit command to exit the program\n"""
         return True
 
     def do_EOF(self, line):
@@ -72,29 +71,6 @@ class HBNBCommand(cmd.Cmd):
         if line:
             args = line.split()
             cls_name = args[0]
-
-        if not args:
-            print("** class name missing **")
-
-        elif cls_name not in self.allcls:
-            print("** class doesn't exist **")
-
-        else:
-            obj_new = self.allcls[cls_name]()
-            obj_new.save()
-            print(obj_new.id)
-
-    def do_show(self, line):
-        """Prints the string representation of an instance based on
-        the class name and id expected syntax: show <class name> <id>"""
-        if line:
-            args = line.split()
-            if len(args) < 2:
-                print("** instance id missing **")
-                return
-
-            cls_name = args[0]
-            user_id = args[1]
         else:
             print("** class name missing **")
             return
@@ -102,6 +78,29 @@ class HBNBCommand(cmd.Cmd):
         if cls_name not in self.allcls:
             print("** class doesn't exist **")
             return
+
+        obj_new = self.allcls[cls_name]()
+        obj_new.save()
+        print(obj_new.id)
+
+    def do_show(self, line):
+        """Prints the string representation of an instance based on
+        the class name and id expected syntax: show <class name> <id>"""
+        if line:
+            args = line.split()
+            cls_name = args[0]
+        else:
+            print("** class name missing **")
+            return
+
+        if cls_name not in self.allcls:
+            print("** class doesn't exist **")
+            return
+
+        if len(args) < 2:
+            print("** instance id missing **")
+            return
+        user_id = args[1]
 
         obj_key = "{}.{}".format(cls_name, user_id)
         obj_all = storage.all()
@@ -117,12 +116,7 @@ class HBNBCommand(cmd.Cmd):
         change expected syntax: delete <class name> <id>"""
         if line:
             args = line.split()
-            if len(args) < 2:
-                print("** instance id missing **")
-                return
-
             cls_name = args[0]
-            user_id = args[1]
         else:
             print("** class name missing **")
             return
@@ -130,6 +124,11 @@ class HBNBCommand(cmd.Cmd):
         if cls_name not in self.allcls:
             print("** class doesn't exist **")
             return
+
+        if len(args) < 2:
+            print("** instance id missing **")
+            return
+        user_id = args[1]
 
         obj_key = "{}.{}".format(cls_name, user_id)
         obj_all = storage.all()
@@ -172,45 +171,47 @@ class HBNBCommand(cmd.Cmd):
         if line:
             args = line.split()
             cls_name = args[0]
-            if len(args) < 2:
-                print("** instance id missing **")
-                return
-            user_id = args[1]
-
-            if len(args) < 3:
-                print("** attribute name missing **")
-                return
-            attr = args[2]
-
-            if len(args) < 4:
-                print("** value missing **")
-                return
-            attr_value = args[3]
         else:
             print("** class name missing **")
             return
-
+        
         if cls_name not in self.allcls:
             print("** class doesn't exist **")
             return
+
+        if len(args) < 2:
+            print("** class doesn't exist **")
+            return
+        user_id = args[1]
 
         obj_key = "{}.{}".format(cls_name, user_id)
         obj_all = storage.all()
         if obj_key not in obj_all:
             print("** no instance found **")
-        else:
-            obj = obj_all[obj_key]
-            attr_value = attr_value.strip('"')
-            # Try to convert attr_value to it respective object,
-            # if it couldn't, leave it as string
-            try:
-                attr_value = eval(attr_value)
-            # SyntaxError when value is not alphanumeric
-            # (in password case), Leave as string
-            except (NameError, SyntaxError):
-                pass
-            setattr(obj, attr, attr_value)
-            obj.save()
+            return
+
+        if len(args) < 3:
+            print("** attribute name missing **")
+            return
+        attr = args[2]
+
+        if len(args) < 4:
+            print("** value missing **")
+            return
+        attr_value = args[3]
+
+        obj = obj_all[obj_key]
+        attr_value = attr_value.strip('"')
+        # Try to convert attr_value to it respective object,
+        # if it couldn't, leave it as string
+        try:
+            attr_value = eval(attr_value)
+        # SyntaxError when value is not alphanumeric
+        # (in password case), Leave as string
+        except (NameError, SyntaxError):
+            pass
+        setattr(obj, attr, attr_value)
+        obj.save()
 
     def count(self, line):
         """"Retrieves the number of instances of a class
