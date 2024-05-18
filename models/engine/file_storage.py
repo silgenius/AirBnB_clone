@@ -33,7 +33,7 @@ class FileStorage:
         Returns a dictionary containing all stored objects (__objects).
         """
 
-        return self.__objects
+        return type(self).__objects
 
     def new(self, obj):
         """
@@ -41,7 +41,7 @@ class FileStorage:
         <obj class name>.id.
         """
         key = str(obj.__class__.__name__) + "." + str(obj.id)
-        self.__objects.update({key: obj})
+        type(self).__objects.update({key: obj})
 
     def save(self):
         """
@@ -50,7 +50,7 @@ class FileStorage:
         """
         sterilized_file = {}
         with open(type(self).__file_path, mode="w", encoding="utf-8") as f:
-            for key, value in self.__objects.items():
+            for key, value in type(self).__objects.items():
                 sterilized_file[key] = value.to_dict()
             sterilized_file = json.dumps(sterilized_file)
             f.write(sterilized_file)
@@ -64,7 +64,7 @@ class FileStorage:
         try:
             with open(type(self).__file_path, mode="r", encoding="utf-8") as f:
                 file_content = json.loads(f.read())
-                self.__objects = {}
+                type(self).__objects = {}
                 module_name = {
                         "BaseModel": "base_model",
                         "User": "user",
@@ -79,6 +79,6 @@ class FileStorage:
                     module = __import__("models." + module_name[cls_name],
                                         fromlist=[cls_name])
                     cls = getattr(module, cls_name)
-                    self.__objects[key] = cls(**value)
+                    type(self).__objects[key] = cls(**value)
         except FileNotFoundError:
             pass
