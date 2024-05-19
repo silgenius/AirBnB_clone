@@ -15,7 +15,7 @@ import json
 
 class TestBasicHBNBCommand(unittest.TestCase):
     """ Test Basic HBNB Command """
-    
+
     def test_quit_command(self):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("quit")
@@ -23,25 +23,25 @@ class TestBasicHBNBCommand(unittest.TestCase):
             self.assertEqual(output, "")
 
     def test_help_command(self):
-         with patch('sys.stdout', new=StringIO()) as f:
+        with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("help")
             output = f.getvalue()
             self.assertIn("Documented commands (type help <topic>):", output)
 
     def test_help_quit_command(self):
-         with patch('sys.stdout', new=StringIO()) as f:
+        with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("help quit")
             output = f.getvalue()
             self.assertEqual(output, "Quit command to exit the program\n\n")
 
     def test_empty_line(self):
-         with patch('sys.stdout', new=StringIO()) as f:
+        with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("")
             output = f.getvalue()
             self.assertEqual(output, "")
 
     def EOF_command(self):
-         with patch('sys.stdout', new=StringIO()) as f:
+        with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("EOF")
             output = f.getvalue()
             self.assertEqual(output, "\n")
@@ -51,7 +51,7 @@ class TestHBNBCommandCreate(unittest.TestCase):
     """ Test Create command """
 
     def test_without_classs_name(self):
-         with patch('sys.stdout', new=StringIO()) as f:
+        with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("create")
             output = f.getvalue()
             self.assertEqual(output, "** class name missing **\n")
@@ -74,7 +74,6 @@ class TestHBNBCommandCreate(unittest.TestCase):
             output = output[:-1]
             new_instance = new_instance["BaseModel.{}".format(output)]
             self.assertIsNotNone(new_instance)
-
 
 
 class TestHBNBCommandShow(unittest.TestCase):
@@ -149,7 +148,7 @@ class TestHBNBCommandDestroy(unittest.TestCase):
         instance = BaseModel()
         instance.save()
         instance_id = instance.id
-        
+
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd(f"destroy BaseModel {instance_id}")
             output = f.getvalue().strip()
@@ -203,10 +202,15 @@ class TestHBNBCommandUpdate(unittest.TestCase):
             self.assertEqual(output, "** no instance found **")
 
     def test_update_no_attribute_name(self):
-        """Test update command with valid class name and id but no attribute name"""
+        """Test update command with valid class name and id
+        but no attribute name
+        """
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd(f"update BaseModel {self.instance.id}")
-            self.assertEqual(f.getvalue().strip(), "** attribute name missing **")
+            self.assertEqual(
+                    f.getvalue().strip(),
+                    "** attribute name missing **"
+                    )
 
     def test_update_no_value(self):
         """Test update command with valid class name and id but no value"""
@@ -215,34 +219,48 @@ class TestHBNBCommandUpdate(unittest.TestCase):
             self.assertEqual(f.getvalue().strip(), "** value missing **")
 
     def test_update_valid(self):
-        """Test update command with valid class name, id, attribute name, and value"""
+        """Test update command with valid class name, id,
+        attribute name, and value"""
         with patch('sys.stdout', new=StringIO()) as f:
-            HBNBCommand().onecmd(f'update BaseModel {self.instance.id} name "test_name"')
+            HBNBCommand().onecmd(
+                    f'update BaseModel {self.instance.id} name "test_name"'
+                    )
             self.assertEqual(f.getvalue().strip(), "")
-            updated_instance = storage.all().get(f"BaseModel.{self.instance.id}")
+            updated_instance = storage.all().get(
+                    f"BaseModel.{self.instance.id}"
+                    )
             self.assertIsNotNone(updated_instance)
             self.assertEqual(updated_instance.name, "test_name")
 
     def test_update_cast_integer(self):
         """Test update command with an integer value"""
         with patch('sys.stdout', new=StringIO()) as f:
-            HBNBCommand().onecmd(f'update BaseModel {self.instance.id} number 42')
+            HBNBCommand().onecmd(
+                    f'update BaseModel {self.instance.id} number 42'
+                    )
             self.assertEqual(f.getvalue().strip(), "")
-            updated_instance = storage.all().get(f"BaseModel.{self.instance.id}")
+            updated_instance = storage.all().get(
+                    f"BaseModel.{self.instance.id}"
+                    )
             self.assertIsNotNone(updated_instance)
             self.assertEqual(updated_instance.number, 42)
 
     def test_update_cast_float(self):
         """Test update command with a float value"""
         with patch('sys.stdout', new=StringIO()) as f:
-            HBNBCommand().onecmd(f'update BaseModel {self.instance.id} price 19.99')
+            HBNBCommand().onecmd(
+                    f'update BaseModel {self.instance.id} price 19.99'
+                    )
             self.assertEqual(f.getvalue().strip(), "")
-            updated_instance = storage.all().get(f"BaseModel.{self.instance.id}")
+            updated_instance = storage.all().get(
+                    f"BaseModel.{self.instance.id}"
+                    )
             self.assertIsNotNone(updated_instance)
             self.assertEqual(updated_instance.price, 19.99)
 
-class TestHBNBCommandClassAll(unittest.TestCase):
 
+class TestHBNBCommandClassAll(unittest.TestCase):
+    """ Test <class name>.all() """
     def setUp(self):
         """Set up instances for testing."""
         self.classes = {
@@ -282,7 +300,11 @@ class TestHBNBCommandClassAll(unittest.TestCase):
         for cls_name, instance in self.instances.items():
             with patch('sys.stdout', new=StringIO()) as f:
                 HBNBCommand().onecmd(f"{cls_name}.all()")
-                expected_output = [str(obj) for key, obj in storage.all().items() if key.startswith(cls_name)]
+                expected_output = [
+                        str(obj)
+                        for key, obj in storage.all().items()
+                        if key.startswith(cls_name)
+                        ]
                 self.assertEqual(eval(f.getvalue().strip()), expected_output)
 
 
@@ -315,7 +337,10 @@ class TestHBNBCommandClassCount(unittest.TestCase):
         """Test count command with invalid class name"""
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("MyModel.count()")
-            self.assertEqual(f.getvalue().strip(), "** class doesn't exist **")
+            self.assertEqual(
+                    f.getvalue().strip(),
+                    "** class doesn't exist **"
+                    )
 
     def test_count_valid_class_name(self):
         """Test count command with valid class name"""
@@ -323,7 +348,6 @@ class TestHBNBCommandClassCount(unittest.TestCase):
             with patch('sys.stdout', new=StringIO()) as f:
                 HBNBCommand().onecmd(f"{cls_name}.count()")
                 self.assertEqual(f.getvalue().strip(), str(len(instances)))
-
 
 
 class TestHBNBCommandClassShow(unittest.TestCase):
@@ -373,7 +397,9 @@ class TestHBNBCommandClassShow(unittest.TestCase):
         for cls_name, instance in self.instances.items():
             with patch('sys.stdout', new=StringIO()) as f:
                 HBNBCommand().onecmd(f"{cls_name}.show(\"{instance.id}\")")
-                expected_output = str(storage.all()[f"{cls_name}.{instance.id}"])
+                expected_output = str(
+                        storage.all()[f"{cls_name}.{instance.id}"]
+                        )
                 self.assertEqual(f.getvalue().strip(), expected_output)
 
 
@@ -461,7 +487,9 @@ class TestHBNBCommandClassUpdate(unittest.TestCase):
     def test_update_invalid_class_name(self):
         """Test update command with invalid class name"""
         with patch('sys.stdout', new=StringIO()) as f:
-            HBNBCommand().onecmd("MyModel.update(\"1234-1234-1234\", \"name\", \"value\")")
+            HBNBCommand().onecmd(
+                    "MyModel.update(\"1234-1234-1234\", \"name\", \"value\")"
+                    )
             self.assertEqual(f.getvalue().strip(), "** class doesn't exist **")
 
     def test_update_no_id(self):
@@ -473,7 +501,9 @@ class TestHBNBCommandClassUpdate(unittest.TestCase):
     def test_update_instance_not_found(self):
         """Test update command with an id that does not exist"""
         with patch('sys.stdout', new=StringIO()) as f:
-            HBNBCommand().onecmd("BaseModel.update(\"1234-1234-1234\", \"name\", \"value\")")
+            HBNBCommand().onecmd(
+                    "BaseModel.update(\"1234-1234-1234\", \"name\", \"value\")"
+                    )
             self.assertEqual(f.getvalue().strip(), "** no instance found **")
 
     def test_update_no_attribute_name(self):
@@ -481,20 +511,31 @@ class TestHBNBCommandClassUpdate(unittest.TestCase):
         for cls_name, instance in self.instances.items():
             with patch('sys.stdout', new=StringIO()) as f:
                 HBNBCommand().onecmd(f"{cls_name}.update(\"{instance.id}\")")
-                self.assertEqual(f.getvalue().strip(), "** attribute name missing **")
+                self.assertEqual(
+                        f.getvalue().strip(),
+                        "** attribute name missing **"
+                        )
 
     def test_update_no_value(self):
         """Test update command with no value"""
         for cls_name, instance in self.instances.items():
             with patch('sys.stdout', new=StringIO()) as f:
-                HBNBCommand().onecmd(f"{cls_name}.update(\"{instance.id}\", \"name\")")
+                HBNBCommand().onecmd(
+                        f"{cls_name}.update(\"{instance.id}\", \"name\")"
+                        )
                 self.assertEqual(f.getvalue().strip(), "** value missing **")
 
     def test_update_valid_instance(self):
-        """Test update command with a valid class name, id, attribute name, and value"""
+        """Test update command with a valid class name, id,
+        attribute name, and value"""
         for cls_name, instance in self.instances.items():
             with patch('sys.stdout', new=StringIO()) as f:
-                HBNBCommand().onecmd(f"{cls_name}.update(\"{instance.id}\", \"name\", \"Ray\")")
+                HBNBCommand().onecmd(
+                        f"{cls_name}.update("
+                        f"\"{instance.id}\", "
+                        f"\"name\", "
+                        f"\"Ray\")"
+                        )
                 updated_instance = storage.all()[f"{cls_name}.{instance.id}"]
                 self.assertEqual(updated_instance.name, 'Ray')
                 self.assertEqual(f.getvalue().strip(), "")
@@ -552,11 +593,14 @@ class TestHBNBCommandUpdateWithDict(unittest.TestCase):
         update_dict = '{"name": "Holberton", "age": 89}'
         for cls_name, instance in self.instances.items():
             with patch('sys.stdout', new=StringIO()) as f:
-                HBNBCommand().onecmd(f'{cls_name}.update(\"{instance.id}\", {update_dict})')
+                HBNBCommand().onecmd(
+                        f'{cls_name}.update(\"{instance.id}\", {update_dict})'
+                        )
                 self.assertEqual(f.getvalue().strip(), "")
                 updated_instance = storage.all()[f"{cls_name}.{instance.id}"]
                 self.assertEqual(updated_instance.name, "Holberton")
                 self.assertEqual(updated_instance.age, 89)
+
 
 class TestHBNBCommandDefault(unittest.TestCase):
     """ Test invalid command """
@@ -571,11 +615,13 @@ class TestHBNBCommandDefault(unittest.TestCase):
             "User"
             "some_random_text"
         ]
-        
+
         for command in invalid_commands:
             with patch('sys.stdout', new=StringIO()) as f:
                 HBNBCommand().onecmd(command)
-                self.assertEqual(f.getvalue().strip(), "*** Unknown syntax: " + command)
+                self.assertEqual(
+                        f.getvalue().strip(), "*** Unknown syntax: " + command
+                        )
 
 
 if __name__ == '__main__':

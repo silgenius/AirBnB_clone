@@ -174,7 +174,7 @@ class HBNBCommand(cmd.Cmd):
         else:
             print("** class name missing **")
             return
-        
+
         if cls_name not in self.allcls:
             print("** class doesn't exist **")
             return
