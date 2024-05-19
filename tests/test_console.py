@@ -399,5 +399,64 @@ class TestHBNBCommandClassUpdate(unittest.TestCase):
             self.assertEqual(storage.all()[f"BaseModel.{self.instance.id}"].first_name, "Holberton")
 
 
+class TestHBNBCommandUpdateWithDict(unittest.TestCase):
+
+    def setUp(self):
+        """Set up instances for testing."""
+        self.classes = {
+            "Amenity": Amenity,
+            "BaseModel": BaseModel,
+            "City": City,
+            "Place": Place,
+            "Review": Review,
+            "State": State,
+            "User": User
+        }
+        self.instances = {}
+        for cls_name, cls in self.classes.items():
+            instance = cls()
+            instance.save()
+            self.instances[cls_name] = instance
+
+    def tearDown(self):
+        """Clean up by deleting the created instances."""
+        storage.all().clear()
+
+    def test_update_no_class_name(self):
+        """Test update command with no class name"""
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd(".update()")
+            self.assertEqual(f.getvalue().strip(), "** class name missing **")
+
+    def test_update_invalid_class_name(self):
+        """Test update command with invalid class name"""
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("MyModel.update()")
+            self.assertEqual(f.getvalue().strip(), "** class doesn't exist **")
+
+    def test_update_no_id(self):
+        """Test update command with no id"""
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("BaseModel.update()")
+            self.assertEqual(f.getvalue().strip(), "** instance id missing **")
+
+    def test_update_instance_not_found(self):
+        """Test update command with valid class name but non-existent id"""
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("BaseModel.update(121212)")
+            self.assertEqual(f.getvalue().strip(), "** no instance found **")
+
+    def test_update_valid_instance_with_dict(self):
+        """Test update command with valid class name, id, and dictionary"""
+        update_dict = '{"name": "Holberton", "age": 89}'
+        for cls_name, instance in self.instances.items():
+            with patch('sys.stdout', new=StringIO()) as f:
+                HBNBCommand().onecmd(f'{cls_name}.update(\"{instance.id}\", {update_dict})')
+                self.assertEqual(f.getvalue().strip(), "")
+                updated_instance = storage.all()[f"{cls_name}.{instance.id}"]
+                self.assertEqual(updated_instance.name, "Holberton")
+                self.assertEqual(updated_instance.age, 89)
+
+
 if __name__ == '__main__':
     unittest.main()
