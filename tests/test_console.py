@@ -234,7 +234,7 @@ class TestHBNBCommandUpdate(unittest.TestCase):
             self.assertEqual(updated_instance.price, 19.99)
 
 
-class TestHBNBCommandCount(unittest.TestCase):
+class TestHBNBCommandClassCount(unittest.TestCase):
     """ Test for <class name>.count() """
 
     def setUp(self):
@@ -261,7 +261,7 @@ class TestHBNBCommandCount(unittest.TestCase):
             self.assertEqual(f.getvalue().strip(), "2")
 
 
-class TestHBNBCommandShow(unittest.TestCase):
+class TestHBNBCommandClassShow(unittest.TestCase):
     """ Test for <class name>.show(<id>) """
 
     def setUp(self):
@@ -300,7 +300,7 @@ class TestHBNBCommandShow(unittest.TestCase):
             self.assertEqual(output, expected_output)
 
 
-class TestHBNBCommandDestroy(unittest.TestCase):
+class TestHBNBCommandClassDestroy(unittest.TestCase):
     """ Test for <class name>.destroy(<id>) """
 
     def setUp(self):
@@ -337,7 +337,7 @@ class TestHBNBCommandDestroy(unittest.TestCase):
             self.assertEqual(f.getvalue().strip(), "")
             self.assertNotIn(f"BaseModel.{self.instance.id}", storage.all())
 
-class TestHBNBCommandUpdate(unittest.TestCase):
+class TestHBNBCommandClassUpdate(unittest.TestCase):
 
     def setUp(self):
         """Set up instances for testing."""
