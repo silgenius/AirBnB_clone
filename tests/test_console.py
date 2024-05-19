@@ -558,6 +558,25 @@ class TestHBNBCommandUpdateWithDict(unittest.TestCase):
                 self.assertEqual(updated_instance.name, "Holberton")
                 self.assertEqual(updated_instance.age, 89)
 
+class TestHBNBCommandDefault(unittest.TestCase):
+    """ Test invalid command """
+    def test_invalid_command(self):
+        """Test default behavior for invalid command"""
+        invalid_commands = [
+            "unknown_command",
+            "wroong",
+            "right",
+            "123443",
+            "invalid.command",
+            "User"
+            "some_random_text"
+        ]
+        
+        for command in invalid_commands:
+            with patch('sys.stdout', new=StringIO()) as f:
+                HBNBCommand().onecmd(command)
+                self.assertEqual(f.getvalue().strip(), "*** Unknown syntax: " + command)
+
 
 if __name__ == '__main__':
     unittest.main()
