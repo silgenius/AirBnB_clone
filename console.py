@@ -180,7 +180,7 @@ class HBNBCommand(cmd.Cmd):
             return
 
         if len(args) < 2:
-            print("** class doesn't exist **")
+            print("** instance id missing **")
             return
         user_id = args[1]
 
