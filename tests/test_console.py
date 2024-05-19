@@ -331,8 +331,20 @@ class TestHBNBCommandClassShow(unittest.TestCase):
 
     def setUp(self):
         """Set up instances for testing."""
-        self.instance = BaseModel()
-        self.instance.save()
+        self.classes = {
+            "Amenity": Amenity,
+            "BaseModel": BaseModel,
+            "City": City,
+            "Place": Place,
+            "Review": Review,
+            "State": State,
+            "User": User
+        }
+        self.instances = {}
+        for cls_name, cls in self.classes.items():
+            instance = cls()
+            instance.save()
+            self.instances[cls_name] = instance
 
     def tearDown(self):
         """Clean up by deleting the created instances."""
@@ -341,7 +353,7 @@ class TestHBNBCommandClassShow(unittest.TestCase):
     def test_show_invalid_class_name(self):
         """Test show command with invalid class name"""
         with patch('sys.stdout', new=StringIO()) as f:
-            HBNBCommand().onecmd("MyModel.show()")
+            HBNBCommand().onecmd("MyModel.show(1234-1234-1234)")
             self.assertEqual(f.getvalue().strip(), "** class doesn't exist **")
 
     def test_show_no_id(self):
@@ -351,18 +363,18 @@ class TestHBNBCommandClassShow(unittest.TestCase):
             self.assertEqual(f.getvalue().strip(), "** instance id missing **")
 
     def test_show_instance_not_found(self):
-        """Test show command with valid class name but non-existent id"""
+        """Test show command with an id that does not exist"""
         with patch('sys.stdout', new=StringIO()) as f:
-            HBNBCommand().onecmd("BaseModel.show(121212)")
+            HBNBCommand().onecmd("BaseModel.show(1234-1234-1234)")
             self.assertEqual(f.getvalue().strip(), "** no instance found **")
 
     def test_show_valid_instance(self):
-        """Test show command with valid class name and id"""
-        with patch('sys.stdout', new=StringIO()) as f:
-            HBNBCommand().onecmd(f"BaseModel.show(\"{self.instance.id}\")")
-            output = f.getvalue().strip()
-            expected_output = str(storage.all()[f"BaseModel.{self.instance.id}"])
-            self.assertEqual(output, expected_output)
+        """Test show command with a valid class name and id"""
+        for cls_name, instance in self.instances.items():
+            with patch('sys.stdout', new=StringIO()) as f:
+                HBNBCommand().onecmd(f"{cls_name}.show(\"{instance.id}\")")
+                expected_output = str(storage.all()[f"{cls_name}.{instance.id}"])
+                self.assertEqual(f.getvalue().strip(), expected_output)
 
 
 class TestHBNBCommandClassDestroy(unittest.TestCase):
