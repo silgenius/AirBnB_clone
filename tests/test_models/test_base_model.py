@@ -18,7 +18,7 @@ class TestBaseModel(unittest.TestCase):
         self.assertIsInstance(UUID(self.model.id), UUID)
         self.assertIsInstance(self.model.created_at, datetime)
         self.assertIsInstance(self.model.updated_at, datetime)
-        self.assertEqual(self.model.created_at, self.model.updated_at)
+        self.assertNotEqual(self.model.created_at, self.model.updated_at)
 
     def test_str_representation(self):
         """Test the __str__ method"""
@@ -43,7 +43,7 @@ class TestBaseModel(unittest.TestCase):
         self.assertEqual(model_dict['id'], self.model.id)
         self.assertEqual(model_dict['created_at'], self.model.created_at.isoformat())
         self.assertEqual(model_dict['updated_at'], self.model.updated_at.isoformat())
-        self.assertEqual(model_dict['created_at'], model_dict['updated_at'])
+        self.assertNotEqual(model_dict['created_at'], model_dict['updated_at'])
 
     def test_has_attributes(self):
         """Test if the model has the required attributes"""

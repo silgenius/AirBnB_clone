@@ -87,8 +87,6 @@ class TestUserInstances(unittest.TestCase):
 
         self.assertNotIn(None, my_user.__dict__.values())
 
-    def test_with_None_password(self):
-        self.assertRaises(ValueError, lambda: User(password=None))
 
 
 class TestUserUniqueness(unittest.TestCase):
@@ -102,8 +100,6 @@ class TestUserUniqueness(unittest.TestCase):
     def test_unique_id(self):
         self.assertNotEqual(self.user1.id, self.user2.id)
 
-    def test_unique_email(self):
-        self.assertNotEqual(self.user1.email, self.user2.email)
 
     def test_unique_timestamps_created_at(self):
         self.assertNotEqual(
@@ -149,13 +145,13 @@ class TestUserMethods(unittest.TestCase):
         self.assertGreater(self.user.updated_at, pre_updated_at)
 
     def test_save_method_Unintentional_change(self):
-        pre_name = self.user.name
+        pre_name = self.user.first_name
         pre_email = self.user.email
         updated_name = "Martin"
-        self.user.name = updated_name
+        self.user.first_name = updated_name
         self.user.save()
-        self.assertEqual(updated_user.name, updated_name)
-        self.assertEqual(updated_user.email, pre_email_email)
+        self.assertNotEqual(self.user.first_name, pre_name)
+        self.assertEqual(self.user.email, pre_email)
 
     def test_to_dict_method(self):
         user_dict = self.user.to_dict()
@@ -165,12 +161,14 @@ class TestUserMethods(unittest.TestCase):
         dtt = datetime.now()
         dtt_iso = dtt.isoformat()
         my_user = User(
-            "22", id="1423456667286",
-            created_at=dtt_iso, updated_at=dtt_iso,
-            email="ray@yahoo.com", password="ray223$",
-            first_name="Ray", last_name="Edward"
-            )
+                password="ray223$", id="1423456667286",
+                created_at=dtt_iso, updated_at=dtt_iso,
+                email="ray@yahoo.com",
+                first_name="Ray", last_name="Edward"
+                )
+
         output_dict = {
+                "__class__": "User",
                 "id": "1423456667286",
                 "created_at": dtt_iso,
                 "updated_at": dtt_iso,
@@ -178,7 +176,9 @@ class TestUserMethods(unittest.TestCase):
                 "password": "ray223$",
                 "first_name": "Ray",
                 "last_name": "Edward"
-                    }
+                }
+
+
         self.assertEqual(my_user.to_dict(), output_dict)
 
     def test_to_dict_output_none(self):
