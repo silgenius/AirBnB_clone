@@ -241,6 +241,50 @@ class TestHBNBCommandUpdate(unittest.TestCase):
             self.assertIsNotNone(updated_instance)
             self.assertEqual(updated_instance.price, 19.99)
 
+class TestHBNBCommandClassAll(unittest.TestCase):
+
+    def setUp(self):
+        """Set up instances for testing."""
+        self.classes = {
+            "Amenity": Amenity,
+            "BaseModel": BaseModel,
+            "City": City,
+            "Place": Place,
+            "Review": Review,
+            "State": State,
+            "User": User
+        }
+        self.instances = {}
+        for cls_name, cls in self.classes.items():
+            instance = cls()
+            instance.save()
+            self.instances[cls_name] = instance
+
+    def tearDown(self):
+        """Clean up by deleting the created instances."""
+        storage.all().clear()
+
+    def test_all_no_class_name(self):
+        """Test all command with no class name"""
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd(".all()")
+            expected_output = [str(obj) for obj in storage.all().values()]
+            self.assertEqual(eval(f.getvalue().strip()), expected_output)
+
+    def test_all_invalid_class_name(self):
+        """Test all command with invalid class name"""
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("MyModel.all()")
+            self.assertEqual(f.getvalue().strip(), "** class doesn't exist **")
+
+    def test_all_valid_class_name(self):
+        """Test all command with valid class name"""
+        for cls_name, instance in self.instances.items():
+            with patch('sys.stdout', new=StringIO()) as f:
+                HBNBCommand().onecmd(f"{cls_name}.all()")
+                expected_output = [str(obj) for key, obj in storage.all().items() if key.startswith(cls_name)]
+                self.assertEqual(eval(f.getvalue().strip()), expected_output)
+
 
 class TestHBNBCommandClassCount(unittest.TestCase):
     """ Test for <class name>.count() """
