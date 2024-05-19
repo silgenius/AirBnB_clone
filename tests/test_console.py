@@ -291,10 +291,21 @@ class TestHBNBCommandClassCount(unittest.TestCase):
 
     def setUp(self):
         """Set up instances for testing."""
-        self.instance1 = BaseModel()
-        self.instance1.save()
-        self.instance2 = BaseModel()
-        self.instance2.save()
+        self.classes = {
+            "Amenity": Amenity,
+            "BaseModel": BaseModel,
+            "City": City,
+            "Place": Place,
+            "Review": Review,
+            "State": State,
+            "User": User
+        }
+        self.instances = {}
+        for cls_name, cls in self.classes.items():
+            for _ in range(3):  # Creating 3 instances for each class
+                instance = cls()
+                instance.save()
+                self.instances.setdefault(cls_name, []).append(instance)
 
     def tearDown(self):
         """Clean up by deleting the created instances."""
@@ -308,9 +319,11 @@ class TestHBNBCommandClassCount(unittest.TestCase):
 
     def test_count_valid_class_name(self):
         """Test count command with valid class name"""
-        with patch('sys.stdout', new=StringIO()) as f:
-            HBNBCommand().onecmd("BaseModel.count()")
-            self.assertEqual(f.getvalue().strip(), "2")
+        for cls_name, instances in self.instances.items():
+            with patch('sys.stdout', new=StringIO()) as f:
+                HBNBCommand().onecmd(f"{cls_name}.count()")
+                self.assertEqual(f.getvalue().strip(), str(len(instances)))
+
 
 
 class TestHBNBCommandClassShow(unittest.TestCase):
