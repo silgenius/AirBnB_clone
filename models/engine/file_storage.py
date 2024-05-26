@@ -64,7 +64,6 @@ class FileStorage:
         try:
             with open(type(self).__file_path, mode="r", encoding="utf-8") as f:
                 file_content = json.loads(f.read())
-                # Make sure __object is empty before reload
                 self.__objects = {}
                 module_name = {
                         "BaseModel": "base_model",
