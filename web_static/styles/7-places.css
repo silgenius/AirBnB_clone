@@ -15,6 +15,7 @@
     width: 390px;
     padding: 20px;
     margin: 20px;
+    margin-top: 0;
     border: 1px solid #FF5A5F;
     border-radius: 4px;
     display: inline-block;
