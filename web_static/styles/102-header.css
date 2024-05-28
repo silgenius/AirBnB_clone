@@ -1,0 +1,13 @@
+header {
+    background: white url('../images/hbnblogo.png') 20px no-repeat;
+    background-repeat: no-repeat;
+    height: 70px;
+    width: 100%;
+    border-bottom: 1px solid #CCCCCC;
+}
+
+@media (max-width: 768px) {
+    header {
+        padding: 5px;
+    }
+}
